@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  web:
+    image: app
+    #build: ./app
+    ports:
+      - "5000"
+    depends_on:
+      - db
+
+  stats:
+    image: stats_app
+    #build: ./stats_app
+    ports:
+      - "5001:5001"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: mon_app
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    ports:
+      - "80"
+
+volumes:
+  postgres_data:

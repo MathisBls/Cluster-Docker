@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+    - ./initdb:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_USER=docker
+      - POSTGRES_DB=docker
+  api:
+  build: .
+  depends_on:
+    - postgres
+  environment:
+    STAGE: test
+    SQLALCHEMY_DATABASE_URI: postgresql://docker:docker@postgres:5432/docker
+  networks:
+    - default
+  ports:
+    - 5000:5000
+  volumes:
+    - ./app:/usr/src/app/app
+    - ./migrations:/usr/src/app/migrations
+  restart: always

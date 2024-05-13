@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  jupyter:
+    image: jupyter/minimal-notebook
+    ports:
+      - "4444:8888"
+    networks:
+      - my_network_from_compose
+    container_name: jupyter
+    environment:
+      - JUPYTER_TOKEN=Bonjour
+    volumes:
+      - .:/home/jovyan/work
+
+  elasticsearch:
+    image: elasticsearch:7.2.0
+    ports:
+      - "9200:9300"
+    environment:
+      discovery.type: single-node
+    networks:
+      - my_network_from_compose
+    container_name: elasticsearch
+
+networks:
+  my_network_from_compose:
